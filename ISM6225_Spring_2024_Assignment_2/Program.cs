@@ -1,11 +1,4 @@
-﻿/* 
- 
-YOU ARE NOT ALLOWED TO MODIFY ANY FUNCTION DEFINIDTION's PROVIDED.
-WRITE YOUR CODE IN THE RESPECTIVE QUESTION FUNCTION BLOCK
-
-
-*/
-
+﻿using System.Data;
 using System.Text;
 
 namespace ISM6225_Spring_2024_Assignment_2
@@ -99,8 +92,18 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                if (nums.Length == 0) // It will returns 0 if there are no elements in array nums
+                    return 0;
+                int k = 1; // k will hold index of last unique element. It starts from 1 because the first number in the list is always considered unique
+                for (int i = 1; i < nums.Length; i++) // Code goes through each number in the list from second one (i = 1) because we've already considered the first one
+                {
+                    if (nums[i] != nums[i - 1]) // Current value compares with previous one and decides if it is unique or not
+                    {
+                        nums[k] = nums[i]; // The unique value will be moved front
+                        k++; // Increases K value to compare remaining values
+                    }
+                }
+                return k; // Returns the total no of unique elements
             }
             catch (Exception)
             {
@@ -109,6 +112,7 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
+         * Self reflection - This method removes duplicates from input array by shifting unique elements to front and keeps track of the count of unique elements.
         
         Question 2:
         Given an integer array nums, move all 0's to the end of it while maintaining the relative order of the non-zero elements.
@@ -134,8 +138,18 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<int>();
+                int n = 0;// Variable n to keep track of the position where next non-zero element will be placed.
+                for (int i = 0; i < nums.Length; i++) 
+                {
+                    if (nums[i] != 0) //It checks if the current element at index i in nums array is not equal to zero.
+                    {
+                        int temp = nums[i]; //If the current element is not zero, it swaps the current element with element at position indicated by variable n
+                        nums[i] = nums[n];
+                        nums[n] = temp;
+                        n++;
+                    }
+                }
+                return nums; // Since the array nums is modified directly within the method, there's no need to return anything.
             }
             catch (Exception)
             {
@@ -144,7 +158,8 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
-
+         * Self reflection - The code implements the "two-pointer technique" to efficiently move zeroes to the end of an array while preserving the order of non-zero elements. It iterates through the array once, swapping elements as necessary, resulting in a time complexity of O(n)
+         
         Question 3:
         Given an integer array nums, return all the triplets [nums[i], nums[j], nums[k]] such that i != j, i != k, and j != k, and nums[i] + nums[j] + nums[k] == 0.
 
@@ -185,8 +200,39 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return new List<IList<int>>();
+                IList<IList<int>> result = new List<IList<int>>();
+                Array.Sort(nums); // Array nums is sorted in ascending order. Sorting makes it easier to identify duplicates and also helps in enhance the solution
+                int n = nums.Length;
+                for (int i = 0; i < n - 2; i++) //It iterates up to second last element because the last two elements will be covered by the left and right pointers in the nested loop
+                {
+                    if (i > 0 && nums[i] == nums[i - 1]) // If the current element is the same as the previous one, it skips to the next iteration.
+                        continue;
+                    int left = i + 1; // Initializes two pointers, left and right, which will be used to find the other two elements in the triplet.
+                    int right = n - 1;
+                    while (left < right)
+                    {
+                        int sum = nums[i] + nums[left] + nums[right]; // Sum of the current triplet is calculated
+                        if (sum == 0) // Sum added to result if the triplet sum is zero
+                        {
+                            result.Add(new List<int> { nums[i], nums[left], nums[right] });
+                            while (left < right && nums[left] == nums[left + 1]) // These two lines ensure that the added triplet is unique by skipping over any duplicate values of nums[left] and nums[right] before adding them to the result list
+                                left++;
+                            while (left < right && nums[right] == nums[right - 1])
+                                right--;
+                            left++; // Any duplicate elements are skipped by incrementing left and decrementing right
+                            right--;
+                        }
+                        else if (sum < 0)
+                        {
+                            left++; // Current triplet's sum is too small, so left is incremented.
+                        }
+                        else
+                        {
+                            right--; // Current triplet's sum is too large, so right is decremented.
+                        }
+                    }
+                }
+                return result;
             }
             catch (Exception)
             {
@@ -195,6 +241,7 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
+         * Self reflection - Method provided solution to the ThreeSum problem using sorting and a two-pointer approach, with careful consideration given to handle duplicates and edge cases.
 
         Question 4:
         Given a binary array nums, return the maximum number of consecutive 1's in the array.
@@ -220,8 +267,22 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int mconescount = 0; // These two variable are defined to hold count of consecutive one's
+                int conescount = 0;
+                foreach (int i in nums) // Repeat through each element in the array nums
+                {
+                    if (i == 1) // If current element is 1, it means we encountered another consecutive one, so we increment the conecount variable.
+                    {
+                        conescount++;
+                    }
+                    else // Update mconecount variable if current count of consecutive ones (conecount) is greater than previous mconecount. Then, resets the count to 0 to start counting consecutive ones again.
+                    {
+                        mconescount = Math.Max(mconescount, conescount);
+                        conescount = 0;
+                    }
+                }
+                mconescount = Math.Max(mconescount, conescount);
+                return mconescount; // returns max count of consecutive ones
             }
             catch (Exception)
             {
@@ -230,6 +291,7 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
+         * Self reflection - Method effectively finds maximum count of consecutive ones in the input array. Also learned array traversal, counting elements, and returning results from methods in a structured manner.
 
         Question 5:
         You are tasked with writing a program that converts a binary number to its equivalent decimal representation without using bitwise operators or the `Math.Pow` function. You will implement a function called `BinaryToDecimal` which takes an integer representing a binary number as input and returns its decimal equivalent. 
@@ -256,8 +318,16 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                int dNum = 0; //Variable to store the decimal equivalent of the binary number
+                int basenum = 1; //Variable to keep track of the current base value (power of 2)
+                while (binary > 0)
+                {
+                    int lastDigit = binary % 10; // It calculates last digit of binary number by taking remainder of binary divided by 10 (binary % 10)
+                    binary = binary / 10; // Updates binary number by dividing it to 10 (binary / 10), effectively removs the last digit
+                    dNum += lastDigit * basenum; //Calculates the decimal value of current digit by multiplying last digit by basenum and adds it to dNum.
+                    basenum = basenum * 2; //Updates basenum by multiplying it by 2, as the base value increases by a power of 2 with each digit processed.
+                }
+                return dNum; //After processing all digits of binary number, the method returns the final dNum value, which represents the decimal equivalent of the input binary number.
             }
             catch (Exception)
             {
@@ -266,6 +336,7 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
+         * Self reflection - The method tells process of converting binary number to its decimal equivalent using iterative computation. It also tells concept of positional notation, where the position of digit determines its value. it highlights the use of basic arithmetic operations such as division, modulus, and multiplication in binary to decimal conversion.
 
         Question:6
         Given an integer array nums, return the maximum difference between two successive elements in its sorted form. If the array contains less than two elements, return 0.
@@ -294,8 +365,46 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                if (nums.Length < 2) // Checks for atleast two numbers in the array nums beacuse the ask is between two successive numbers
+                    return 0;
+                int minnum = int.MaxValue; // variables to hold minimum and maximum value 
+                int maxnum = int.MinValue;
+                foreach (int num in nums) // checks for every element in array nums
+                {
+                    if (num < minnum) // Update minnum if the current number is smaller
+                        minnum = num;
+                    if (num > maxnum) // Update maxnum if the current number is larger
+                        maxnum = num;
+                }
+                int bucketSize = Math.Max(1, (maxnum - minnum) / (nums.Length - 1)); // Defines size of each bucket based on range of numbers in the array
+                int numBuckets = (maxnum - minnum) / bucketSize + 1; // 
+                int[] minBucket = new int[numBuckets];
+                int[] maxBucket = new int[numBuckets];
+                for (int i = 0; i < numBuckets; i++) // Creates array to store min and max numbers in each bucket
+                {
+                    minBucket[i] = int.MaxValue; // starts with largest possible integer
+                    maxBucket[i] = int.MinValue; // starts with smallest possible integer
+                }
+                foreach (int num in nums) // Allocates numbers into buckets based on value
+                {
+                    int bucketIndex = (num - minnum) / bucketSize; // Calculates index of the bucket for current number
+                    if (num < minBucket[bucketIndex]) // Updates minimum and maximum values in the bucket
+                        minBucket[bucketIndex] = num;
+                    if (num > maxBucket[bucketIndex])
+                        maxBucket[bucketIndex] = num;
+                }
+                int maxGap = 0;// variable to keep track of maximum gap and previous maximum number
+                int prevMax = minnum;
+                for (int i = 0; i < numBuckets; i++) // Iterate through the buckets to find the maximum gap
+                {
+                    if (minBucket[i] != int.MaxValue && maxBucket[i] != int.MinValue) // Checks for non empty bucket
+                    {
+                        maxGap = Math.Max(maxGap, minBucket[i] - prevMax); // updates maxgap if the current gap is high
+                        prevMax = maxBucket[i]; //updates previpos max number to current max number in current bucket
+                    }
+                }
+
+                return maxGap;
             }
             catch (Exception)
             {
@@ -304,6 +413,7 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
+         * Self reflection - I have learned to find smallest and largest elements in an array by iterating through array and updating variables for minimum and maximum numbers. Also learned a technique for organizing data to simplify calculations, especially when dealing with a wide range of values by dividing the range of numbers into buckets and assigning each number to its corresponding bucket
 
         Question:7
         Given an integer array nums, return the largest perimeter of a triangle with a non-zero area, formed from three of these lengths. If it is impossible to form any triangle of a non-zero area, return 0.
@@ -334,8 +444,16 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return 0;
+                Array.Sort(nums); // Sorts the elements of num array
+                Array.Reverse(nums); // Reverses the elemenets of num array
+                for (int i = 0; i < nums.Length - 2; i++) //iterates on elements of nums array, starting from first element up to third-to-last element (nums.Length - 2). Its used to check if it's possible to form a triangle with the current element and the two subsequent elements.
+                {
+                    if (nums[i] < nums[i + 1] + nums[i + 2]) //Checks if current triplet forms a valid triangle (a + b > c)
+                    {
+                        return nums[i] + nums[i + 1] + nums[i + 2];
+                    }
+                }
+                return 0; // Returns 0 if no triangle founds
             }
             catch (Exception)
             {
@@ -344,7 +462,8 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
 
         /*
-
+         * Self reflection - Method efficiently finds the largest possible perimeter of a triangle that can be formed using three elements from the given array of integers.
+         
         Question:8
 
         Given two strings s and part, perform the following operation on s until all occurrences of the substring part are removed:
@@ -388,8 +507,13 @@ namespace ISM6225_Spring_2024_Assignment_2
         {
             try
             {
-                // Write your code here and you can modify the return value according to the requirements
-                return "";
+                while (s.Contains(part)) // loop continues till input s contains the defined input part
+                {
+                    int index = s.IndexOf(part); // gives the index of leftmost occurance of part
+                    s = s.Remove(index, part.Length); // removes the part from input s
+                }
+
+                return s; // Return modified string after removing all occurrences of part
             }
             catch (Exception)
             {
@@ -439,3 +563,5 @@ namespace ISM6225_Spring_2024_Assignment_2
         }
     }
 }
+
+// Self reflection - Using while loop and string manipulation, the RemoveOccurrences method eliminates every instance of a given substring from a given string. ConvertIListToNestedList creates a string representation of a nested list from a list of lists of integers. ConvertIListToArray loops through a list of integers, producing a string for each member before converting the list to an array string representation. The parts are encased in the proper brackets and joined together with commas in both conversion procedures.
